@@ -45,8 +45,8 @@
 </nav>
 
 <div class="container">
-
-<?=$content?>
+    <?=\Library\FlashMessage::getFlash('file')?><br>
+    <?=$content?>
 
 </div><!-- /.container -->
 

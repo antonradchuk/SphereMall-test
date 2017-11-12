@@ -10,11 +10,13 @@ namespace Controller;
 
 use Library\Controller;
 use Library\DbConnection;
+use Library\FlashMessage;
 use Library\Request;
+use Library\Router;
 use Model\ContactForm;
 use Model\Feedback;
 use Model\Image;
-use Model\Mapper;
+use Model\FeadbackSaver;
 use Swift_Mailer;
 use Swift_SmtpTransport;
 use Swift_Message;
@@ -30,40 +32,40 @@ class SiteController extends Controller
     public function contactAction( Request $request)
     {
         $form = new ContactForm($request);
-        $maper = new Mapper();
+        $saver = new FeadbackSaver();
+        $error = $form->error;
+
 
 
         if($request->isPost()){
-            $image = new Image();
+            $image = new Image($request);
 
-            if($form->isValid() && $image->isValid()) {
-                $feedback = (new Feedback())
-                    ->setFirstName($form->firstName)
-                    ->setSecondName($form->secondName)
-                    ->setEmail($form->email)
-                    ->setMessage($form->message)
-                    ->setImagePath($image::UPLOAD_DIR)
-                    ->setImage($image->getName());
-                $image->save();
-                $maper->save($feedback);
+            if($form->isValid()){
+                if($image->isValid()) {
+                    $feedback = new Feedback($form, $image);
+                    $image->save();
+                    $saver->save($feedback)
+                    ;
 
+                    $transport = (new Swift_SmtpTransport('smtp.gmail.com', 587, 'tls'))
+                        ->setUsername('radchuk.anton@gmail.com')
+                        ->setPassword('portland963')
+                    ;
 
-                $transport = (new Swift_SmtpTransport('smtp.gmail.com', 587, 'tls'))
-                    ->setUsername('radchuk.anton@gmail.com')
-                    ->setPassword('portland963')
-                ;
+                    $mailer = new Swift_Mailer($transport);
 
-                $mailer = new Swift_Mailer($transport);
+                    $message = (new Swift_Message('Wonderful Subject'))
+                        ->setFrom(['radchuk.anton@gmail.com' => 'Anton Radchuk'])
+                        ->setTo([$form->email => $form->firstName])
+                        ->setBody('hello world')
+                        ->setCharset('UTF-8')
+                    ;
 
-                $message = (new Swift_Message('Wonderful Subject'))
-                    ->setFrom(['radchuk.anton@gmail.com' => 'Anton Radchuk'])
-                    ->setTo([$form->email => $form->firstName])
-                    ->setBody('hello world')
-                    ->setCharset('UTF-8');
-                ;
+                   $mailer->send($message);
 
-                $result = $mailer->send($message);
-
+                   FlashMessage::setFlash('Feedback saved');
+                    //Router::redirect('/index.php?site/contact');
+                }
             }
         }
 

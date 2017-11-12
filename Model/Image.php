@@ -8,6 +8,8 @@
 
 namespace Model;
 
+use Library\Request;
+
 class Image
 {
     const UPLOAD_DIR =  'uploads/';
@@ -17,13 +19,19 @@ class Image
     public $size;
     public $error;
     public $tmp_name;
+    public $imError;
 
-    public function __construct ()
+
+
+    public function __construct (Request $request)
     {
-        $this->name = basename($_FILES['image']['name']);
-        $this->size = $_FILES['image']['size'];
-        $this->error = $_FILES['image']['error'];
-        $this->tmp_name = $_FILES['image']['tmp_name'];
+        $this->name = basename($request->file['image']['name']);
+        $this->size = $request->file['image']['size'];
+        $this->error = $request->file['image']['error'];
+        $this->tmp_name = $request->file['image']['tmp_name'];
+
+        $this->imageSize() ? null : $this->imError[] = 'Incorrect file size';
+        $this->extensionCheck() ? null : $this->imError[] = 'Incorrect file extension';
     }
 
     /**
@@ -58,7 +66,7 @@ class Image
      */
     private function imageSize(): bool
     {
-        if($this->size > 100000){
+        if($this->size > 300000){
             return false;
         }
 

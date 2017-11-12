@@ -19,6 +19,18 @@ class Feedback
     private $imagePath;
     private $image;
 
+
+    public function __construct (ContactForm $form, Image $image)
+    {
+        $this->setFirstName($form->firstName);
+        $this->setSecondName($form->secondName);
+        $this->setEmail($form->email);
+        $this->setMessage($form->message);
+        $this->setImagePath($image::UPLOAD_DIR);
+        $this->setImage($image->getName());
+    }
+
+
     /**
      * @return mixed
      */

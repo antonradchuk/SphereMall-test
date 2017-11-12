@@ -10,7 +10,7 @@ namespace Model;
 
 use Library\DbConnection;
 
-class Mapper
+class FeadbackSaver
 {
     public function save($object)
     {

@@ -29,6 +29,7 @@ spl_autoload_register(function ($className){
 );
 
 try{
+    session_start();
     Config::set('db_user', 'remote');
     Config::set('db_pass', 'remote');
     Config::set('db_name', 'test_task');

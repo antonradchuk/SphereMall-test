@@ -15,12 +15,15 @@ class Request
     private $get;
     private $post;
     private $server;
+    public  $file;
 
     public function __construct ()
     {
         $this->get = $_GET;
         $this->post = $_POST;
         $this->server = $_SERVER;
+        $this->file = $_FILES;
+
     }
 
     /**
@@ -28,10 +31,11 @@ class Request
      * @param null $default
      * @return null
      */
-    public function post( $key, $default = null)
+    public function post($key, $default = null)
     {
         return isset($this->post[$key]) ? $this->post[$key] : $default;
     }
+
 
     /**
      * @param $key
@@ -50,5 +54,7 @@ class Request
     {
         return (bool)$this->post;
     }
+
+
 
 }
