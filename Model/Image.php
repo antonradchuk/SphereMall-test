@@ -43,6 +43,7 @@ class Image
         $extension = end($exploded);
 
         if(in_array($extension, self::EXTENSIONS)){
+
             return true;
         }
 

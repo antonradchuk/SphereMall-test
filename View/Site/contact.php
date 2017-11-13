@@ -6,6 +6,9 @@
             <h1>Contact Form</h1>
         </div>
     </div>
+    <?php foreach ($error as $errors) : ?>
+        <?=$errors?><br>
+    <?php endforeach; ?>
 
     <div class="row">
         <div class="col-sm-8 col-sm-offset-2">

@@ -14,6 +14,7 @@ class FeadbackSaver
 {
     public function save($object)
     {
+
         $pdo = DbConnection::getInstance()->getPdo();
         $sql = $sql = 'INSERT INTO feadback (first_name, second_name, email, message, image_path, image )
                 VALUES (:first_name, :second_name, :email, :message, :image_path, :image )';

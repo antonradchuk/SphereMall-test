@@ -9,7 +9,7 @@
 namespace Library;
 
 
-class FlashMessage
+class Session
 {
 
     public static function set($key , $value)

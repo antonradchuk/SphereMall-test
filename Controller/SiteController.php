@@ -7,10 +7,9 @@
  */
 namespace Controller;
 
-
 use Library\Controller;
 use Library\DbConnection;
-use Library\FlashMessage;
+use Library\Session;
 use Library\Request;
 use Library\Router;
 use Model\ContactForm;
@@ -28,18 +27,14 @@ class SiteController extends Controller
 
     }
 
-
     public function contactAction( Request $request)
     {
         $form = new ContactForm($request);
         $saver = new FeadbackSaver();
         $error = $form->error;
 
-
-
         if($request->isPost()){
             $image = new Image($request);
-
             if($form->isValid()){
                 if($image->isValid()) {
                     $feedback = new Feedback($form, $image);
@@ -63,12 +58,17 @@ class SiteController extends Controller
 
                    $mailer->send($message);
 
-                   FlashMessage::setFlash('Feedback saved');
-                    //Router::redirect('/index.php?site/contact');
+                   Session::setFlash('Feedback saved');
+                   Router::redirect('/index.php?route=site/contact');
+
                 }
+                Session::setFlash('Incorrect file extension or file size');
             }
         }
 
-        return $this->render('contact', ['form' => $form]);
+        return $this->render('contact', [
+            'form' => $form,
+            'error' => $error
+        ]);
     }
 }
